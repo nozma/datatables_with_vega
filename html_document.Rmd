@@ -10,6 +10,7 @@ output: html_document
 ## パッケージ
 
 ```{r}
+# {r}
 library(DT)
 library(htmltools)
 library(vegawidget)
@@ -18,6 +19,7 @@ library(vegawidget)
 ## データの準備
 
 ```{r}
+# {r}
 mydata <- palmerpenguins::penguins
 
 # プロットに使う変数の指定
@@ -29,6 +31,7 @@ group <- "species"
 ## チャートの作成
 
 ```{r}
+# {r}
 # Vega-Lite specの定義
 spec_mychart <-
   list(
@@ -56,6 +59,7 @@ mychart <-
 ## テーブルの作成
 
 ```{r}
+# {r}
 mytable <- 
   datatable(
     data = mydata,  # 注) mydataはdatatableにしか設定していない
@@ -67,6 +71,7 @@ mytable <-
 ## データ更新関数の作成
 
 ```{js}
+// {js}
 $(document).ready(function(){ // domが読み込まれてから以下を実行
   let table = $('#my-table table'); // datatableのIDを指定する
   

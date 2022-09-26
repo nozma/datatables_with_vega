@@ -3735,13 +3735,15 @@ pre code {
 <h1>セットアップ</h1>
 <div id="パッケージ" class="section level2">
 <h2>パッケージ</h2>
-<pre class="r"><code>library(DT)
+<pre class="r"><code># {r}
+library(DT)
 library(htmltools)
 library(vegawidget)</code></pre>
 </div>
 <div id="データの準備" class="section level2">
 <h2>データの準備</h2>
-<pre class="r"><code>mydata &lt;- palmerpenguins::penguins
+<pre class="r"><code># {r}
+mydata &lt;- palmerpenguins::penguins
 
 # プロットに使う変数の指定
 x_val &lt;- &quot;bill_length_mm&quot;
@@ -3750,7 +3752,8 @@ group &lt;- &quot;species&quot;</code></pre>
 </div>
 <div id="チャートの作成" class="section level2">
 <h2>チャートの作成</h2>
-<pre class="r"><code># Vega-Lite specの定義
+<pre class="r"><code># {r}
+# Vega-Lite specの定義
 spec_mychart &lt;-
   list(
     `$schema` = vega_schema(),
@@ -3775,7 +3778,8 @@ mychart &lt;-
 </div>
 <div id="テーブルの作成" class="section level2">
 <h2>テーブルの作成</h2>
-<pre class="r"><code>mytable &lt;- 
+<pre class="r"><code># {r}
+mytable &lt;- 
   datatable(
     data = mydata,  # 注) mydataはdatatableにしか設定していない
     filter = &quot;top&quot;, # 各行にフィルタを表示する
@@ -3784,7 +3788,8 @@ mychart &lt;-
 </div>
 <div id="データ更新関数の作成" class="section level2">
 <h2>データ更新関数の作成</h2>
-<pre class="js"><code>$(document).ready(function(){ // domが読み込まれてから以下を実行
+<pre class="js"><code>// {js}
+$(document).ready(function(){ // domが読み込まれてから以下を実行
   let table = $(&#39;#my-table table&#39;); // datatableのIDを指定する
   
   function data_update() {
@@ -3818,6 +3823,7 @@ mychart &lt;-
   data_update();
 });</code></pre>
 <script type="text/javascript">
+// {js}
 $(document).ready(function(){ // domが読み込まれてから以下を実行
   let table = $('#my-table table'); // datatableのIDを指定する
   
