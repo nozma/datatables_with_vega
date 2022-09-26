@@ -1,0 +1,118 @@
+---
+title: "HTML Document Demo"
+author: '@nozma'
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+# セットアップ
+
+## パッケージ
+
+```{r}
+library(DT)
+library(htmltools)
+library(vegawidget)
+```
+
+## データの準備
+
+```{r}
+mydata <- palmerpenguins::penguins
+
+# プロットに使う変数の指定
+x_val <- "bill_length_mm"
+y_val <- "bill_depth_mm"
+group <- "species"
+```
+
+## チャートの作成
+
+```{r}
+# Vega-Lite specの定義
+spec_mychart <-
+  list(
+    `$schema` = vega_schema(),
+    data = list(name = "source"), # データ本体は空
+    mark = "point",
+    encoding = list(
+      x = list(field = x_val, type = "quantitative"),
+      y = list(field = y_val, type = "quantitative"),
+      color = list(field = group, type = "nominal")
+    )
+  ) |> 
+  as_vegaspec()
+
+# データハンドラの作成
+handler_data <-
+  vw_handler_data("value")
+
+# vegawidgetの作成
+mychart <-
+  vegawidget(spec_mychart, elementId = "my-chart") |> 
+  vw_add_data_listener("source", handler_data)
+```
+
+## テーブルの作成
+
+```{r}
+mytable <- 
+  datatable(
+    data = mydata,  # 注) mydataはdatatableにしか設定していない
+    filter = "top", # 各行にフィルタを表示する
+    elementId = "my-table"
+  ) 
+```
+
+## データ更新関数の作成
+
+```{js}
+$(document).ready(function(){ // domが読み込まれてから以下を実行
+  let table = $('#my-table table'); // datatableのIDを指定する
+  
+  function data_update() {
+    // フィルタ済みのテーブルデータをJSONに変換する
+    var data = table.DataTable().rows( {search: 'applied'} ).data().toArray(); // 表示されているデータの取得
+    var headers = table.dataTable().dataTableSettings[0].aoColumns; // テーブルヘッダの取得
+    var JSONdata = [];
+    
+    for (var i = 0; i < data.length; i++) {
+      var d = {};
+      for (var j = 0; j < headers.length; j++) {
+        var header = headers[j].sTitle;
+        d[header] = data[i][j];
+      }
+      JSONdata.push(d);
+    }
+    
+    // チャートを新しいデータで更新する
+    Vegawidget.findViewPromise('#my-chart').then(function(view) {
+      // 表示されているデータをクリアし、新しいデータを挿入したチェンジセットを作成
+      var changeSet = vega.changeset() 
+                          .remove(vega.truthy)
+                          .insert(JSONdata);
+      // データを更新し、再描画
+      view.change("source", changeSet).run();
+    });
+  }
+  // テーブルに変化があった場合に関数を実行するよう登録
+  table.on("draw.dt", data_update);
+  // 初期表示用に関数を一回実行
+  data_update();
+});
+```
+
+# 描画
+
+## テーブル
+
+```{r}
+mytable
+```
+
+## チャート
+
+```{r}
+mychart
+```
+
